@@ -123,8 +123,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    TCHAR buf1[100] = TEXT("Имя: Никита\nФамилия: Мохсени\tДата рождения: 10.02.2004\t");
-    TCHAR buf2[100] = TEXT("Имя: Дмитрий\nФамилия: Шарпило\tДата рождения: 22.06.2004\t");
+    TCHAR buf11[100] = TEXT("Никита");
+    TCHAR buf12[100] = TEXT("Мохсени");
+    TCHAR buf13[100] = TEXT("10.02.2004");
+    TCHAR buf21[100] = TEXT("Дмитрий");
+    TCHAR buf22[100] = TEXT("Шарпило");
+    TCHAR buf23[100] = TEXT("22.06.2004");
     switch (message)
     {
         /*case WM_MOUSEMOVE:
@@ -133,20 +137,55 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;*/
     case WM_LBUTTONDOWN:
     {
-        int rez = MessageBox(hWnd, TEXT("Yes - 1 резюме\nNo - 2 резюме\nCancel - Сред. ариф. символов"), TEXT("Резюмэ"), MB_YESNOCANCEL | MB_ICONASTERISK);
-        if (rez == IDYES)
-            MessageBox(hWnd, buf1, TEXT("1 резюме"), MB_OK);
-        else if (rez == IDCANCEL)
+        int task = MessageBox(hWnd, TEXT("Ok - резюме\nCancel - Отгадывание чисел"), TEXT("Multi-task"), MB_OKCANCEL | MB_ICONASTERISK);
+        if(task == IDOK)
         {
-            int rez = _tcsclen(buf1) + _tcslen(buf2);
-            rez /= 2;
-            TCHAR buf[100];
-            wsprintf(buf, TEXT("Кол-во символов = %d"), rez);
-            MessageBox(hWnd, buf, TEXT("WINDOW"), MB_OK);
+            int rez = MessageBox(hWnd, TEXT("Yes - 1 резюме\nNo - 2 резюме\nCancel - Сред. ариф. символов"), TEXT("Резюмэ"), MB_YESNOCANCEL | MB_ICONASTERISK);
+            if (rez == IDYES)
+            {
+                MessageBox(hWnd, buf11, TEXT("Имя"), MB_OK);
+                MessageBox(hWnd, buf12, TEXT("Фамилия"), MB_OK);
+                MessageBox(hWnd, buf13, TEXT("Дата рождения"), MB_OK);
+            }
+            else if (rez == IDCANCEL)
+            {
+                int rez = _tcsclen(buf11) + _tcslen(buf21) + _tcsclen(buf12) + _tcslen(buf22) + _tcsclen(buf13) + _tcslen(buf23);
+                rez /= 2;
+                TCHAR buf[100];
+                wsprintf(buf, TEXT("Кол-во символов = %d"), rez);
+                MessageBox(hWnd, buf, TEXT("WINDOW"), MB_OK);
+            }
+            else if (rez == IDNO)
+            {
+                MessageBox(hWnd, buf21, TEXT("Имя"), MB_OK);
+                MessageBox(hWnd, buf22, TEXT("Фамилия"), MB_OK);
+                MessageBox(hWnd, buf23, TEXT("Дата рождения"), MB_OK);
+            }
+            break;
         }
-        else if (rez == IDNO)
-            MessageBox(hWnd, buf2, TEXT("2 резюме"), MB_OK);
-        break;
+        else if (task == IDCANCEL)
+        {
+            int reply = 1;
+            int temp = rand() % (1 - 100) + 1;
+            while (true)
+            {
+                TCHAR buf[50];
+                wsprintf(buf, TEXT("Ваше число: %d?"), temp);
+                int rez = MessageBox(hWnd, buf, TEXT("Угадывание"), MB_YESNO | MB_ICONQUESTION);
+                if (rez == IDYES)
+                {
+                    wsprintf(buf, TEXT("Кол-во попыток: %d"), reply);
+                    MessageBox(hWnd, buf, TEXT("Угадывание"), MB_OK);
+                    break;
+                }
+                else if (rez == IDNO)
+                {
+                    temp = rand() % (1 - 100) + 1;
+                    reply++;
+                }
+            }
+            break;
+        }
     }
     case WM_DESTROY:
         PostQuitMessage(0);
